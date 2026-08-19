@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="claro">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#4C7DF0" />
+<title>BINGO de Emojis</title>
+<meta name="description" content="Bingo de emojis: gere sua cartela, acompanhe o sorteio e grite BINGO!" />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎉</text></svg>" />
+</head>
+<body>
+
+<!-- ============================================================
+     1) TELA DE CARREGAMENTO (10 segundos)
+     ============================================================ -->
+<div id="loader" class="loader" role="status" aria-live="polite">
+  <div class="loader__box">
+    <div class="loader__emojis" aria-hidden="true">
+      <span>😀</span><span>🐶</span><span>🌈</span><span>🍕</span><span>🚀</span>
+    </div>
+    <h1 class="loader__title">BINGO <span aria-hidden="true">🎉</span></h1>
+    <p class="loader__author">Desenvolvido por Leonardo Graciano</p>
+    <div class="bar" aria-hidden="true"><div class="bar__fill" id="barFill"></div></div>
+    <p class="loader__pct"><span id="loaderPct">0</span>%</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     2) APLICATIVO
+     ============================================================ -->
+<div id="app" class="app" hidden>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">🎉</span>
+      <span class="brand__name">BINGO</span>
+    </div>
+    <div class="topbar__actions">
+      <button class="iconbtn" id="btnSom" type="button" aria-pressed="false">🔊 Som: OFF</button>
+      <button class="iconbtn" id="btnTema" type="button" title="Modo escuro">🌙</button>
+      <button class="iconbtn" id="btnAjuda" type="button" title="Como jogar">ℹ️</button>
+    </div>
+  </header>
+
+  <!-- Navegação principal (2 abas) -->
+  <nav class="tabs" role="tablist" aria-label="Navegação principal">
+    <button class="tab is-active" id="tabCartela" role="tab" aria-selected="true" aria-controls="viewCartela" type="button">🎟️ Minha Cartela</button>
+    <button class="tab" id="tabSorteador" role="tab" aria-selected="false" aria-controls="viewSorteador" type="button">🎲 Sorteador</button>
+  </nav>
+
+  <main class="main">
+
+    <!-- ---------- ABA 1: MINHA CARTELA ---------- -->
+    <section class="view is-active" id="viewCartela" role="tabpanel" aria-labelledby="tabCartela">
+      <div class="card">
+        <div class="card__head">
+          <h2 class="h2">Minha Cartela</h2>
+          <p class="muted" id="cartelaInfo">Toque nos emojis que já foram sorteados.</p>
+        </div>
+
+        <!-- Cabeçalho B I N G O -->
+        <div class="bingo-head" aria-hidden="true">
+          <span class="bh b">B</span><span class="bh i">I</span><span class="bh n">N</span><span class="bh g">G</span><span class="bh o">O</span>
+        </div>
+
+        <!-- Grade 5x5 gerada por JavaScript -->
+        <div class="grid" id="grid" role="grid" aria-label="Cartela de bingo 5 por 5"></div>
+
+        <div class="row-actions">
+          <button class="btn btn--ghost" id="btnNovaCartela" type="button">Nova Cartela 🎲</button>
+          <button class="btn btn--ghost" id="btnLimparMarcas" type="button">Limpar marcações 🧽</button>
+        </div>
+        <p class="legend"><span class="dot dot--drawn"></span> já saiu no sorteio &nbsp;·&nbsp; <span class="dot dot--marked"></span> marcado por você</p>
+      </div>
+    </section>
+
+    <!-- ---------- ABA 2: SORTEADOR ---------- -->
+    <section class="view" id="viewSorteador" role="tabpanel" aria-labelledby="tabSorteador">
+
+      <!-- Tela de senha (barreira de interface) -->
+      <div class="card card--lock" id="lockScreen">
+        <div class="lock__icon" aria-hidden="true">🔒</div>
+        <h2 class="h2">Área do Sorteador</h2>
+        <p class="muted">Digite a senha para continuar</p>
+        <form class="lock__form" id="formSenha" autocomplete="off">
+          <label class="sr-only" for="inputSenha">Senha</label>
+          <input class="input" id="inputSenha" type="password" inputmode="text" placeholder="••••••••" autocomplete="new-password" />
+          <button class="btn btn--primary" type="submit">Entrar</button>
+        </form>
+        <p class="error" id="erroSenha" role="alert" hidden>Senha incorreta. Tente novamente.</p>
+      </div>
+
+      <!-- Painel do sorteador -->
+      <div class="card" id="drawPanel" hidden>
+        <div class="card__head card__head--row">
+          <h2 class="h2">Sorteador</h2>
+          <button class="iconbtn" id="btnSair" type="button">🔒 Bloquear</button>
+        </div>
+
+        <!-- Palco do emoji sorteado -->
+        <div class="stage" id="stage">
+          <div class="stage__emoji" id="stageEmoji">🎲</div>
+          <p class="stage__label" id="stageLabel">Toque em SORTEAR EMOJI para começar</p>
+        </div>
+
+        <button class="btn btn--draw" id="btnSortear" type="button">🎲 SORTEAR EMOJI</button>
+
+        <div class="progress">
+          <div class="progress__top">
+            <strong id="contador">Emojis sorteados: 0 / 75</strong>
+            <span class="muted" id="restantes">Restam 75</span>
+          </div>
+          <div class="bar bar--slim"><div class="bar__fill" id="progFill" style="width:0%"></div></div>
+        </div>
+
+        <h3 class="h3">Histórico</h3>
+        <div class="history" id="history"><p class="muted">Nenhum emoji sorteado ainda.</p></div>
+
+        <div class="row-actions">
+          <button class="btn btn--ghost" id="btnReiniciar" type="button">🔄 Reiniciar Sorteio</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Desenvolvido por Leonardo Graciano</footer>
+</div>
+
+<!-- ============================================================
+     3) MODAIS / OVERLAYS
+     ============================================================ -->
+
+<!-- Como jogar -->
+<div class="modal" id="modalAjuda" hidden>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="ajudaTitulo">
+    <h2 class="h2" id="ajudaTitulo">Como jogar?</h2>
+    <ol class="steps">
+      <li>Abra sua cartela.</li>
+      <li>Aguarde o sorteador.</li>
+      <li>Quando aparecer um emoji que está na sua cartela, marque ele.</li>
+      <li>Complete uma linha, coluna, diagonal ou toda a cartela.</li>
+      <li>Quando conseguir, grite: BINGO! 🎉</li>
+    </ol>
+    <button class="btn btn--primary" data-fechar-modal type="button">Entendi 👍</button>
+  </div>
+</div>
+
+<!-- Confirmação genérica -->
+<div class="modal" id="modalConfirma" hidden>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="confirmaTitulo">
+    <div class="modal__icon" aria-hidden="true">🤔</div>
+    <h2 class="h2" id="confirmaTitulo">Tem certeza?</h2>
+    <p class="muted" id="confirmaTexto"></p>
+    <div class="row-actions">
+      <button class="btn btn--ghost" id="confirmaNao" type="button">Cancelar</button>
+      <button class="btn btn--primary" id="confirmaSim" type="button">Sim, continuar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tela de vitória -->
+<div class="win" id="winScreen" hidden>
+  <div class="win__box" role="dialog" aria-modal="true" aria-labelledby="winTitulo">
+    <div class="win__emoji" aria-hidden="true">🏆</div>
+    <h2 class="win__title" id="winTitulo">🎉 BINGO! 🎉</h2>
+    <p class="win__sub" id="winSub">Você completou uma linha!</p>
+    <div class="row-actions">
+      <button class="btn btn--primary" id="btnComemorar" type="button">🎉 Comemorar!</button>
+      <button class="btn btn--ghost" id="btnJogarNovamente" type="button">Jogar novamente</button>
+    </div>
+    <button class="link" id="btnFecharWin" type="button">Continuar na cartela</button>
+  </div>
+</div>
+
+<!-- Canvas dos confetes -->
+<canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+
+<script src="script.js"></script>
+</body>
+</html>

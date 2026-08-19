@@ -1,0 +1,42 @@
+BINGO DE EMOJIS - Desenvolvido por Leonardo Graciano
+====================================================
+
+COMO ABRIR
+1. Descompacte a pasta "bingo-emojis".
+2. De dois cliques no arquivo index.html (abre em qualquer navegador).
+   Nao precisa de internet, servidor ou instalacao.
+
+ARQUIVOS
+- index.html  -> estrutura das telas
+- style.css   -> cores, layout, animacoes e responsividade
+- script.js   -> regras do jogo (75 emojis, cartela, sorteio, bingo, sons)
+
+COMO JOGAR
+- Aba "Minha Cartela": cartela 5x5 aleatoria com 24 emojis + LIVRE no centro.
+  Toque nas casas dos emojis que forem sorteados. Linha, coluna, diagonal ou
+  cartela completa = BINGO com confetes.
+- Aba "Sorteador": protegida por senha (leozinho). Sorteia um dos 75 emojis por
+  vez, com contagem "3, 2, 1", historico e contador "x / 75". Nenhum emoji repete
+  na mesma partida.
+
+BOTOES DO TOPO
+- Som ON/OFF (comeca desligado)
+- Modo escuro
+- Como jogar
+
+O jogo salva no navegador (localStorage): cartela, marcacoes, emojis sorteados,
+som e tema. Atualizar a pagina nao perde a partida.
+
+OBSERVACAO SOBRE A SENHA
+A senha do sorteador e apenas uma barreira de interface, nao uma autenticacao
+segura: o projeto e 100% frontend. No script.js guardamos apenas um hash da
+senha, mas alguem com conhecimento tecnico consegue contornar pelo navegador.
+
+DICA PARA TESTES
+Abrir index.html?dev=1 pula a tela de carregamento de 10 segundos e libera o
+sorteador. Use apenas para testar.
+
+PARA TROCAR OS EMOJIS
+Edite os 5 grupos no inicio do script.js (constante GRUPOS). Cada grupo
+corresponde a uma coluna (B, I, N, G, O) e deve ter 15 emojis diferentes,
+totalizando 75.
